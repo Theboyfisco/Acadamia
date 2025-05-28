@@ -13,6 +13,7 @@ A comprehensive full-stack school management system built with modern web techno
 - 👨‍🏫 **Teacher Portals**: Class and assignment management tools
 - 👪 **Parent Access**: Real-time updates on student progress and attendance
 - 👨‍💼 **Administration**: Full system control and user management
+- ✨ **Improved Forms**: Streamlined and consistent forms with custom dropdowns for better user experience.
 
 ### Academic Tools
 - 📅 **Class Scheduling**: Intuitive timetable management
@@ -35,11 +36,12 @@ A comprehensive full-stack school management system built with modern web techno
 ### Frontend
 - **Framework**: Next.js 14 with App Router
 - **UI Library**: React 18
-- **Styling**: TailwindCSS with custom theming
+- **Styling**: TailwindCSS with custom theming and enhanced dark mode support
 - **State Management**: React Context API
 - **Form Handling**: React Hook Form with Zod validation
 - **Data Visualization**: Recharts
 - **Calendar**: React Big Calendar
+- **Icons**: SVG icons for better scalability and styling
 
 ### Backend
 - **Runtime**: Node.js 18+
