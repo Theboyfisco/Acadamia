@@ -1,0 +1,146 @@
+/*! Tailwind base styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+@layer components {
+  /* React Calendar overrides */
+  .react-calendar {
+    @apply w-full border-none font-sans bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100;
+  }
+
+  .react-calendar__navigation__label__labelText {
+    @apply font-semibold text-gray-900 dark:text-gray-100;
+  }
+
+  .react-calendar__tile--active {
+    @apply bg-lamaSky dark:bg-lamaSky/80 text-black dark:text-white;
+  }
+
+  /* React Big Calendar overrides */
+  .rbc-btn-group:first-child {
+    @apply hidden;
+  }
+
+  .rbc-toolbar-label {
+    @apply text-right px-5 text-gray-900 dark:text-gray-100;
+  }
+
+  .rbc-btn-group:last-child {
+    @apply text-xs;
+  }
+
+  .rbc-btn-group:last-child button {
+    @apply border-none bg-lamaPurpleLight dark:bg-lamaPurpleLight/80 ml-0.5 text-gray-900 dark:text-gray-100;
+  }
+
+  .rbc-toolbar button.rbc-active {
+    @apply bg-lamaPurple dark:bg-lamaPurple/90 shadow-none text-white;
+  }
+
+  .rbc-time-view {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+
+  .rbc-time-header {
+    @apply hidden;
+  }
+}
+
+/* Critical CSS - Above the fold styles */
+@layer base {
+  /* Smooth scrolling for better UX */
+  html {
+    @apply scroll-smooth;
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbars globally */
+  * {
+    -ms-overflow-style: none !important;  /* IE and Edge */
+    scrollbar-width: none !important;  /* Firefox */
+  }
+
+  *::-webkit-scrollbar {
+    display: none !important;  /* Chrome, Safari and Opera */
+  }
+
+  /* Focus styles for better accessibility */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-blue-500 dark:outline-blue-400;
+  }
+
+  /* Optimize font rendering */
+  body {
+    @apply antialiased text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 transition-colors duration-200;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+.rbc-time-content {
+  border: none !important;
+}
+
+.rbc-time-gutter.rbc-time-column {
+  font-size: 12px !important;
+}
+
+.rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
+  padding: 0px 20px !important;
+}
+
+.rbc-timeslot-group {
+  @apply bg-gray-50 dark:bg-gray-800 !important;
+}
+
+.rbc-day-slot {
+  font-size: 14px !important;
+}
+
+.rbc-event {
+  border: none !important;
+  @apply text-gray-900 dark:text-gray-100 !important;
+  padding: 10px !important;
+  margin: 10px !important;
+  width: 99% !important;
+}
+
+.rbc-event:nth-child(1) {
+  @apply bg-blue-50 dark:bg-blue-900/20 !important;
+}
+.rbc-event:nth-child(2) {
+  @apply bg-yellow-50 dark:bg-yellow-900/20 !important;
+}
+.rbc-event:nth-child(3) {
+  @apply bg-purple-50 dark:bg-purple-900/20 !important;
+}
+.rbc-event:nth-child(4) {
+  @apply bg-pink-50 dark:bg-pink-900/20 !important;
+}
+.rbc-event:nth-child(5) {
+  @apply bg-blue-50 dark:bg-blue-900/20 !important;
+}
+.rbc-event:nth-child(6) {
+  @apply bg-yellow-50 dark:bg-yellow-900/20 !important;
+}
+.rbc-event:nth-child(7) {
+  @apply bg-purple-50 dark:bg-purple-900/20 !important;
+}
+.rbc-event:nth-child(8) {
+  @apply bg-pink-50 dark:bg-pink-900/20 !important;
+}
+
+.rbc-event-label {
+  @apply text-gray-500 dark:text-gray-400 !important;
+  margin-bottom: 5px;
+}
