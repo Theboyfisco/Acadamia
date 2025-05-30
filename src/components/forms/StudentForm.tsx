@@ -33,8 +33,24 @@ const StudentForm = ({
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<StudentSchema>({
     resolver: zodResolver(studentSchema),
+    defaultValues: {
+      name: data?.name || '',
+      surname: data?.surname || '',
+      email: data?.email || '',
+      username: data?.username || '',
+      phone: data?.phone || '',
+      address: data?.address || '',
+      bloodType: data?.bloodType || '',
+      birthday: data?.birthday ? new Date(data.birthday).toISOString().split('T')[0] : '',
+      parentId: data?.parentId || '',
+      sex: data?.sex || '',
+      gradeId: data?.gradeId || null,
+      classId: data?.classId || null,
+      id: data?.id || undefined,
+    }
   });
 
   const [img, setImg] = useState<any>(data?.img);
@@ -47,9 +63,15 @@ const StudentForm = ({
     }
   );
 
-  const onSubmit = handleSubmit((data) => {
-    console.log("Student form submitted:", data);
-    formAction({ ...data, img: img?.secure_url });
+  const onSubmit = handleSubmit((formData) => {
+    console.log("Student form submitted:", formData);
+    formAction({ 
+      ...formData,
+      sex: selectedSex,
+      gradeId: selectedGradeId,
+      classId: selectedClassId,
+      img: img?.secure_url 
+    });
   });
 
   const router = useRouter();
@@ -77,16 +99,19 @@ const StudentForm = ({
 
   const handleSexSelect = (sex: string) => {
     setSelectedSex(sex);
+    setValue('sex', sex);
     setIsSexDropdownOpen(false);
   };
 
   const handleGradeSelect = (gradeId: number) => {
     setSelectedGradeId(gradeId);
+    setValue('gradeId', gradeId);
     setIsGradeDropdownOpen(false);
   };
 
   const handleClassSelect = (classId: number) => {
     setSelectedClassId(classId);
+    setValue('classId', classId);
     setIsClassDropdownOpen(false);
   };
 
@@ -95,7 +120,7 @@ const StudentForm = ({
       <div className="mb-4">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">
           {type === "create" ? "Create New Student" : "Update Student Information"}
-        </h1>
+      </h1>
       </div>
 
       <div className="flex gap-4 mb-4">
@@ -146,13 +171,13 @@ const StudentForm = ({
               Account Information
             </h2>
             <div className="space-y-2">
-              <InputField
-                label="Email"
-                name="email"
-                defaultValue={data?.email}
-                register={register}
-                error={errors?.email}
-              />
+        <InputField
+          label="Email"
+          name="email"
+          defaultValue={data?.email}
+          register={register}
+          error={errors?.email}
+        />
               <InputField
                 label="Username"
                 name="username"
@@ -161,14 +186,14 @@ const StudentForm = ({
                 error={errors?.username}
               />
               {type === "create" && (
-                <InputField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  defaultValue={data?.password}
-                  register={register}
-                  error={errors?.password}
-                />
+        <InputField
+          label="Password"
+          name="password"
+          type="password"
+          defaultValue={data?.password}
+          register={register}
+          error={errors?.password}
+        />
               )}
             </div>
           </div>
@@ -177,59 +202,59 @@ const StudentForm = ({
 
       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
         <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-          Personal Information
+        Personal Information
         </h2>
         <div className="grid grid-cols-3 gap-3">
-          <InputField
-            label="First Name"
-            name="name"
-            defaultValue={data?.name}
-            register={register}
-            error={errors.name}
-          />
-          <InputField
-            label="Last Name"
-            name="surname"
-            defaultValue={data?.surname}
-            register={register}
-            error={errors.surname}
-          />
-          <InputField
-            label="Phone"
-            name="phone"
-            defaultValue={data?.phone}
-            register={register}
-            error={errors.phone}
-          />
-          <InputField
-            label="Address"
-            name="address"
-            defaultValue={data?.address}
-            register={register}
-            error={errors.address}
-          />
-           <InputField
-            label="Blood Type"
-            name="bloodType"
-            defaultValue={data?.bloodType}
-            register={register}
-            error={errors.bloodType}
-          />
-          <InputField
-            label="Birthday"
-            name="birthday"
-            defaultValue={data?.birthday?.split("T")[0]}
-            register={register}
-            error={errors.birthday}
-            type="date"
-          />
-          <InputField
-            label="Parent Id"
-            name="parentId"
-            defaultValue={data?.parentId}
-            register={register}
-            error={errors.parentId}
-          />
+        <InputField
+          label="First Name"
+          name="name"
+          defaultValue={data?.name}
+          register={register}
+          error={errors.name}
+        />
+        <InputField
+          label="Last Name"
+          name="surname"
+          defaultValue={data?.surname}
+          register={register}
+          error={errors.surname}
+        />
+        <InputField
+          label="Phone"
+          name="phone"
+          defaultValue={data?.phone}
+          register={register}
+          error={errors.phone}
+        />
+        <InputField
+          label="Address"
+          name="address"
+          defaultValue={data?.address}
+          register={register}
+          error={errors.address}
+        />
+        <InputField
+          label="Blood Type"
+          name="bloodType"
+          defaultValue={data?.bloodType}
+          register={register}
+          error={errors.bloodType}
+        />
+        <InputField
+          label="Birthday"
+          name="birthday"
+          defaultValue={data?.birthday ? new Date(data.birthday).toISOString().split('T')[0] : ''}
+          register={register}
+          error={errors.birthday}
+          type="date"
+        />
+        <InputField
+          label="Parent Id"
+          name="parentId"
+          defaultValue={data?.parentId}
+          register={register}
+          error={errors.parentId}
+        />
           {/* Select fields */}
           {/* Sex Custom Select */}
           <div className="flex flex-col gap-1 w-full">
@@ -259,10 +284,10 @@ const StudentForm = ({
                 </ul>
               )}
             </div>
-            {errors.sex?.message && (
+          {errors.sex?.message && (
               <p className="text-red-500 text-sm mt-1">{errors.sex.message.toString()}</p>
-            )}
-          </div>
+          )}
+        </div>
           {/* Grade Custom Select */}
           <div className="flex flex-col gap-1 w-full">
             <label htmlFor="gradeId" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Grade</label>
@@ -278,22 +303,22 @@ const StudentForm = ({
               </button>
               {isGradeDropdownOpen && (
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
-                  {grades.map((grade: { id: number; level: number }) => (
+            {grades.map((grade: { id: number; level: number }) => (
                     <li
                       key={grade.id}
                       className={`px-4 py-2 cursor-pointer transition-colors ${selectedGradeId === grade.id ? 'bg-blue-500 text-white dark:bg-blue-700' : 'text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'}`}
                       onClick={() => handleGradeSelect(grade.id)}
                     >
-                      {grade.level}
+                {grade.level}
                     </li>
-                  ))}
+            ))}
                 </ul>
               )}
             </div>
-            {errors.gradeId?.message && (
+          {errors.gradeId?.message && (
               <p className="text-red-500 text-sm mt-1">{errors.gradeId.message.toString()}</p>
-            )}
-          </div>
+          )}
+        </div>
           {/* Class Custom Select */}
           <div className="flex flex-col gap-1 w-full">
             <label htmlFor="classId" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Class</label>
@@ -309,13 +334,13 @@ const StudentForm = ({
               </button>
               {isClassDropdownOpen && (
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
-                  {classes.map(
-                    (classItem: {
-                      id: number;
-                      name: string;
-                      capacity: number;
-                      _count: { students: number };
-                    }) => (
+            {classes.map(
+              (classItem: {
+                id: number;
+                name: string;
+                capacity: number;
+                _count: { students: number };
+              }) => (
                       <li
                         key={classItem.id}
                         className={`px-4 py-2 cursor-pointer transition-colors ${selectedClassId === classItem.id ? 'bg-blue-500 text-white dark:bg-blue-700' : 'text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'}`}
@@ -323,18 +348,18 @@ const StudentForm = ({
                       >
                         {classItem.name}
                       </li>
-                    )
-                  )}
+              )
+            )}
                 </ul>
               )}
             </div>
-            {errors.classId?.message && (
+          {errors.classId?.message && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.classId.message.toString()}
-              </p>
-            )}
-          </div>
+              {errors.classId.message.toString()}
+            </p>
+          )}
         </div>
+      </div>
       </div>
 
       {type === "update" && data?.id && (
@@ -361,7 +386,7 @@ const StudentForm = ({
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
         >
           {type === "create" ? "Create Student" : "Save Changes"}
-        </button>
+      </button>
       </div>
     </form>
   );

@@ -70,7 +70,7 @@ const SubjectForm = ({ type, data, setOpen, relatedData }: SubjectFormProps) => 
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           {type === "create" ? "Create New Subject" : "Update Subject"}
-        </h1>
+      </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {type === "create"
             ? "Fill in the subject details below."
@@ -82,13 +82,13 @@ const SubjectForm = ({ type, data, setOpen, relatedData }: SubjectFormProps) => 
         <h2 className="text-md font-semibold text-gray-800 dark:text-white">Subject Details</h2>
 
         <div className="space-y-4">
-          <InputField
+        <InputField
             label="Subject Name"
-            name="name"
-            defaultValue={data?.name}
-            register={register}
-            error={errors?.name}
-          />
+          name="name"
+          defaultValue={data?.name}
+          register={register}
+          error={errors?.name}
+        />
 
           <div className="w-full">
             <label
@@ -138,15 +138,15 @@ const SubjectForm = ({ type, data, setOpen, relatedData }: SubjectFormProps) => 
       </div>
 
       {type === "update" && data?.id && (
-        <InputField
-          label="Id"
-          name="id"
-          defaultValue={data?.id}
-          register={register}
-          error={errors?.id}
-          hidden
-        />
-      )}
+          <InputField
+            label="Id"
+            name="id"
+            defaultValue={data?.id}
+            register={register}
+            error={errors?.id}
+            hidden
+          />
+        )}
 
       <div className="mt-6 flex justify-end gap-3">
         <button

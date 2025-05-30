@@ -86,7 +86,7 @@ const ExamForm = ({
       <div className="mb-4">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">
           {type === "create" ? "Create New Exam" : "Update Exam Information"}
-        </h1>
+      </h1>
       </div>
 
       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
@@ -94,26 +94,26 @@ const ExamForm = ({
           Exam Details
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          <InputField
-            label="Exam title"
-            name="title"
-            register={register}
-            error={errors?.title}
-          />
-          <InputField
-            label="Start Date"
-            name="startTime"
-            register={register}
-            error={errors?.startTime}
-            type="datetime-local"
-          />
-          <InputField
-            label="End Date"
-            name="endTime"
-            register={register}
-            error={errors?.endTime}
-            type="datetime-local"
-          />
+        <InputField
+          label="Exam title"
+          name="title"
+          register={register}
+          error={errors?.title}
+        />
+        <InputField
+          label="Start Date"
+          name="startTime"
+          register={register}
+          error={errors?.startTime}
+          type="datetime-local"
+        />
+        <InputField
+          label="End Date"
+          name="endTime"
+          register={register}
+          error={errors?.endTime}
+          type="datetime-local"
+        />
 
            {/* Lesson Custom Select */}
            <div className="flex flex-col gap-1 w-full">
@@ -152,14 +152,14 @@ const ExamForm = ({
       </div>
 
       {type === "update" && data?.id && (
-        <InputField
-          label="Id"
-          name="id"
-          register={register}
-          error={errors?.id}
-          hidden
-        />
-      )}
+          <InputField
+            label="Id"
+            name="id"
+            register={register}
+            error={errors?.id}
+            hidden
+          />
+        )}
 
       <div className="flex justify-end gap-2">
         <button

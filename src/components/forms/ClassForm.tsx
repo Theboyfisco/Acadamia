@@ -94,7 +94,7 @@ const ClassForm = ({
       <div className="mb-4">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">
           {type === "create" ? "Create New Class" : "Update Class Information"}
-        </h1>
+      </h1>
       </div>
 
       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
@@ -102,15 +102,15 @@ const ClassForm = ({
           Class Details
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          <InputField
-            label="Class name"
-            name="name"
-            register={register}
-            error={errors?.name}
-          />
-          <InputField
-            label="Capacity"
-            name="capacity"
+        <InputField
+          label="Class name"
+          name="name"
+          register={register}
+          error={errors?.name}
+        />
+        <InputField
+          label="Capacity"
+          name="capacity"
             register={register}
             error={errors?.capacity}
             type="number"
@@ -133,22 +133,22 @@ const ClassForm = ({
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
                   {teachers.map((teacher: { id: string; name: string; surname: string }) => (
                     <li
-                      key={teacher.id}
+                  key={teacher.id}
                       className={`px-4 py-2 cursor-pointer transition-colors ${selectedSupervisorId === teacher.id ? 'bg-blue-500 text-white dark:bg-blue-700' : 'text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'}`}
                       onClick={() => handleSupervisorSelect(teacher.id)}
-                    >
+                >
                       {teacher.name} {teacher.surname}
                     </li>
                   ))}
                 </ul>
-              )}
-            </div>
-            {errors.supervisorId?.message && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.supervisorId.message.toString()}
-              </p>
             )}
-          </div>
+            </div>
+          {errors.supervisorId?.message && (
+              <p className="text-red-500 text-sm mt-1">
+              {errors.supervisorId.message.toString()}
+            </p>
+          )}
+        </div>
 
           {/* Grade Custom Select */}
           <div className="flex flex-col gap-1 w-full">
@@ -165,25 +165,25 @@ const ClassForm = ({
               </button>
               {isGradeDropdownOpen && (
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
-                  {grades.map((grade: { id: number; level: number }) => (
+            {grades.map((grade: { id: number; level: number }) => (
                     <li
-                      key={grade.id}
+                key={grade.id}
                       className={`px-4 py-2 cursor-pointer transition-colors ${selectedGradeId === grade.id ? 'bg-blue-500 text-white dark:bg-blue-700' : 'text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'}`}
                       onClick={() => handleGradeSelect(grade.id)}
-                    >
-                      {grade.level}
+              >
+                {grade.level}
                     </li>
-                  ))}
+            ))}
                 </ul>
               )}
             </div>
-            {errors.gradeId?.message && (
+          {errors.gradeId?.message && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.gradeId.message.toString()}
-              </p>
-            )}
-          </div>
+              {errors.gradeId.message.toString()}
+            </p>
+          )}
         </div>
+      </div>
       </div>
 
       {type === "update" && data?.id && (
@@ -209,7 +209,7 @@ const ClassForm = ({
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
         >
           {type === "create" ? "Create Class" : "Save Changes"}
-        </button>
+      </button>
       </div>
     </form>
   );
