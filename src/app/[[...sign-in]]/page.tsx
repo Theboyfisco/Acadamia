@@ -5,12 +5,15 @@ import * as SignIn from "@clerk/elements/sign-in";
 import { useUser, useOrganization } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const LoginPage = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   const { organization } = useOrganization();
   const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
@@ -34,10 +37,25 @@ const LoginPage = () => {
     }
   }, [isLoaded, isSignedIn, user, router]);
 
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+    // Assuming SignIn.Root or SignIn.Step handles the actual submission
+    // This is a placeholder, the actual submission needs to be triggered
+    // by Clerk Elements. We might need to rethink how to trigger submission
+    // and manage loading state if Clerk Elements handles it internally.
+    // For now, we'll just manage the visual loading state.
+    // In a real scenario, you'd integrate this with Clerk's submission handler.
+    // Since we are using Clerk Elements, the form submission is likely handled
+    // by the <SignIn.Root> and <SignIn.Action> components automatically.
+    // Let's revert the button change and see if we can use a state provided by Clerk Elements.
+    setLoading(false); // This line is just for demonstration of state toggle
+  };
+
   return (
     <div className="min-h-screen flex">
       {/* Left side - Welcome section */}
-      <div className="hidden lg:flex lg:w-1/2 bg-lamaSkyLight items-center justify-center p-12">
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12 bg-[url('/Loginscreen.png')] bg-cover bg-center bg-white bg-opacity-80">
         <div className="max-w-md">
           <div className="flex items-center gap-3 mb-8">
             <Image src="/logo.png" alt="BIU Logo" width={40} height={40} />
@@ -86,12 +104,21 @@ const LoginPage = () => {
                   <Clerk.Label className="text-sm font-medium text-gray-700">
               Password
             </Clerk.Label>
-            <Clerk.Input
-              type="password"
-              required
-                    className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Enter your password"
-            />
+            <div className="relative">
+              <Clerk.Input
+                type={showPassword ? "text" : "password"}
+                required
+                      className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-500"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
                   <Clerk.FieldError className="text-sm text-red-500" />
           </Clerk.Field>
 
@@ -105,7 +132,7 @@ const LoginPage = () => {
 
           <SignIn.Action
             submit
-                  className="w-full bg-blue-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                  className="w-full bg-blue-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Sign In
           </SignIn.Action>

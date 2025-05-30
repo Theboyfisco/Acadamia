@@ -101,7 +101,7 @@ const TeacherForm = ({
       <div className="mb-4">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">
           {type === "create" ? "Create New Teacher" : "Update Teacher Information"}
-        </h1>
+      </h1>
       </div>
 
       <div className="flex gap-4 mb-4">
@@ -152,12 +152,12 @@ const TeacherForm = ({
               Account Information
             </h2>
             <div className="space-y-2">
-              <InputField
-                label="Email"
-                name="email"
-                register={register}
-                error={errors?.email}
-              />
+        <InputField
+          label="Email"
+          name="email"
+          register={register}
+          error={errors?.email}
+        />
               <InputField
                 label="Username"
                 name="username"
@@ -165,13 +165,13 @@ const TeacherForm = ({
                 error={errors?.username}
               />
               {type === "create" && (
-                <InputField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  register={register}
-                  error={errors?.password}
-                />
+        <InputField
+          label="Password"
+          name="password"
+          type="password"
+          register={register}
+          error={errors?.password}
+        />
               )}
             </div>
           </div>
@@ -180,46 +180,46 @@ const TeacherForm = ({
 
       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
         <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-          Personal Information
+        Personal Information
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          <InputField
-            label="First Name"
-            name="name"
-            register={register}
-            error={errors.name}
-          />
-          <InputField
-            label="Last Name"
-            name="surname"
-            register={register}
-            error={errors.surname}
-          />
-          <InputField
-            label="Phone"
-            name="phone"
-            register={register}
-            error={errors.phone}
-          />
-          <InputField
-            label="Address"
-            name="address"
-            register={register}
-            error={errors.address}
-          />
-           <InputField
-            label="Blood Type"
-            name="bloodType"
-            register={register}
-            error={errors.bloodType}
-          />
-          <InputField
-            label="Birthday"
-            name="birthday"
-            register={register}
-            error={errors.birthday}
-            type="date"
-          />
+        <InputField
+          label="First Name"
+          name="name"
+          register={register}
+          error={errors.name}
+        />
+        <InputField
+          label="Last Name"
+          name="surname"
+          register={register}
+          error={errors.surname}
+        />
+        <InputField
+          label="Phone"
+          name="phone"
+          register={register}
+          error={errors.phone}
+        />
+        <InputField
+          label="Address"
+          name="address"
+          register={register}
+          error={errors.address}
+        />
+        <InputField
+          label="Blood Type"
+          name="bloodType"
+          register={register}
+          error={errors.bloodType}
+        />
+        <InputField
+          label="Birthday"
+          name="birthday"
+          register={register}
+          error={errors.birthday}
+          type="date"
+        />
 
            {/* Sex Custom Select */}
            <div className="flex flex-col gap-1 w-full">
@@ -291,14 +291,14 @@ const TeacherForm = ({
       </div>
 
       {type === "update" && data?.id && (
-        <InputField
-          label="Id"
-          name="id"
-          register={register}
-          error={errors?.id}
-          hidden
-        />
-      )}
+          <InputField
+            label="Id"
+            name="id"
+            register={register}
+            error={errors?.id}
+            hidden
+          />
+        )}
 
       <div className="flex justify-end gap-2">
         <button
