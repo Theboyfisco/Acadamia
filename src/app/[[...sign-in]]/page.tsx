@@ -21,7 +21,11 @@ const LoginPage = () => {
 
     // Get user role from public metadata
     const role = user?.publicMetadata?.role as string;
-    console.log('User authenticated with role:', role);
+    console.log('Sign-in page - User data:', {
+      userId: user?.id,
+      publicMetadata: user?.publicMetadata,
+      role: role
+    });
     
     // Route based on role
     if (role === 'admin') {
@@ -33,7 +37,7 @@ const LoginPage = () => {
     } else if (role === 'parent') {
       router.push('/parent');
     } else {
-      // No role assigned yet
+      console.log('No role found in public metadata, redirecting to unauthorized');
       router.push('/unauthorized');
     }
     setLoading(false); // Reset loading state when sign-in is complete

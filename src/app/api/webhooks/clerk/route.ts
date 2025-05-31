@@ -28,6 +28,11 @@ export async function POST(req: Request) {
   const payload = await req.json();
   const body = JSON.stringify(payload);
 
+  console.log('Webhook received:', {
+    type: payload.type,
+    data: payload.data
+  });
+
   // Create a new Svix instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
 
@@ -57,6 +62,13 @@ export async function POST(req: Request) {
         const { id, email_addresses, username, public_metadata } = evt.data;
         const role = public_metadata?.role as string || 'student'; // Default role
         const email = email_addresses?.[0]?.email_address;
+
+        console.log('Processing user:', {
+          id,
+          username,
+          role,
+          email
+        });
 
         // Check which model to update based on role
         switch (role) {
@@ -94,28 +106,32 @@ export async function POST(req: Request) {
             break;
             
           case 'student':
-            await prisma.student.upsert({
-              where: { id },
-              update: { 
-                username: username || '',
-                email: email || null
-              },
-              create: { 
-                id,
-                username: username || '',
-                email: email || null,
-                name: '',
-                surname: '',
-                address: '',
-                phone: null,
-                bloodType: '',
-                sex: 'MALE',
-                birthday: new Date(),
-                parentId: 'temp-parent-id',
-                classId: 1,
-                gradeId: 1
-              },
-            });
+            console.log('Creating/updating student record');
+            try {
+              await prisma.student.upsert({
+                where: { id },
+                update: { 
+                  username: username || '',
+                  email: email || null
+                },
+                create: { 
+                  id,
+                  username: username || '',
+                  email: email || null,
+                  name: '',
+                  surname: '',
+                  address: '',
+                  phone: null,
+                  bloodType: '',
+                  sex: 'MALE',
+                  birthday: new Date()
+                },
+              });
+              console.log('Student record created/updated successfully');
+            } catch (error) {
+              console.error('Error creating/updating student:', error);
+              throw error;
+            }
             break;
             
           case 'parent':

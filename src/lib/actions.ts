@@ -251,28 +251,49 @@ export const createStudent = async (
   currentState: CurrentState,
   data: StudentSchema
 ) => {
-  console.log(data);
+  console.log('Creating student with data:', data);
+  let clerkUser = null;
+  
   try {
+    // First check if email or username already exists in database
+    const existingStudent = await prisma.student.findFirst({
+      where: {
+        OR: [
+          { email: data.email },
+          { username: data.username }
+        ]
+      }
+    });
+
+    if (existingStudent) {
+      console.log('Student with this email or username already exists');
+      return { success: false, error: true };
+    }
+
     const classItem = await prisma.class.findUnique({
       where: { id: data.classId },
       include: { _count: { select: { students: true } } },
     });
 
     if (classItem && classItem.capacity === classItem._count.students) {
+      console.log('Class is at capacity');
       return { success: false, error: true };
     }
 
-    const user = await clerkClient.users.createUser({
+    console.log('Creating Clerk user');
+    clerkUser = await clerkClient.users.createUser({
       username: data.username,
       password: data.password,
       firstName: data.name,
       lastName: data.surname,
       publicMetadata:{role:"student"}
     });
+    console.log('Clerk user created:', clerkUser.id);
 
-    await prisma.student.create({
+    console.log('Creating database record');
+    const student = await prisma.student.create({
       data: {
-        id: user.id,
+        id: clerkUser.id,
         username: data.username,
         name: data.name,
         surname: data.surname,
@@ -288,11 +309,23 @@ export const createStudent = async (
         parentId: data.parentId,
       },
     });
+    console.log('Database record created:', student.id);
 
-    // revalidatePath("/list/students");
     return { success: true, error: false };
   } catch (err) {
-    console.log(err);
+    console.error('Error creating student:', err);
+    
+    // If we created a Clerk user but failed to create the database record,
+    // we should delete the Clerk user to keep things in sync
+    if (clerkUser) {
+      try {
+        console.log('Cleaning up: Deleting Clerk user');
+        await clerkClient.users.deleteUser(clerkUser.id);
+      } catch (deleteErr) {
+        console.error('Error deleting Clerk user:', deleteErr);
+      }
+    }
+    
     return { success: false, error: true };
   }
 };
@@ -460,6 +493,70 @@ export const deleteExam = async (
     });
 
     // revalidatePath("/list/subjects");
+    return { success: true, error: false };
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: true };
+  }
+};
+
+export const createLesson = async (
+  currentState: CurrentState,
+  data: any
+) => {
+  try {
+    await prisma.lesson.create({
+      data: {
+        name: data.name,
+        subjectId: parseInt(data.subjectId),
+        teacherId: data.teacherId,
+        classId: parseInt(data.classId),
+      },
+    });
+
+    return { success: true, error: false };
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: true };
+  }
+};
+
+export const updateLesson = async (
+  currentState: CurrentState,
+  data: any
+) => {
+  try {
+    await prisma.lesson.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        name: data.name,
+        subjectId: parseInt(data.subjectId),
+        teacherId: data.teacherId,
+        classId: parseInt(data.classId),
+      },
+    });
+
+    return { success: true, error: false };
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: true };
+  }
+};
+
+export const deleteLesson = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  const id = data.get("id") as string;
+  try {
+    await prisma.lesson.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
     return { success: true, error: false };
   } catch (err) {
     console.log(err);

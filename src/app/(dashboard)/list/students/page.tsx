@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { auth } from "@clerk/nextjs/server";
+import toast from 'react-hot-toast';
 
 type StudentList = Student & { class: Class };
 
@@ -141,6 +142,46 @@ const StudentListPage = async ({
     }),
     prisma.student.count({ where: query }),
   ]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const birthdayStr = formData.get("birthday") as string;
+    
+    // Ensure the date is properly formatted
+    const birthday = birthdayStr ? new Date(birthdayStr) : new Date();
+    
+    const data = {
+      username: formData.get("username") as string,
+      password: formData.get("password") as string,
+      name: formData.get("name") as string,
+      surname: formData.get("surname") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      address: formData.get("address") as string,
+      bloodType: formData.get("bloodType") as string,
+      birthday: birthday,
+      sex: formData.get("sex") as "MALE" | "FEMALE",
+      gradeId: parseInt(formData.get("gradeId") as string),
+      classId: parseInt(formData.get("classId") as string),
+      parentId: formData.get("parentId") as string,
+    };
+
+    try {
+      const result = await createStudent({ success: false, error: false }, data);
+      
+      if (result.success) {
+        toast.success('Student created successfully!');
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error('Failed to create student. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('An error occurred while creating the student.');
+    }
+  };
 
   return (
     <div className="bg-gray-800 p-4 rounded-md flex-1 m-4 mt-0">
