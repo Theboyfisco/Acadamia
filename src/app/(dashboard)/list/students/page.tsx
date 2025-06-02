@@ -62,7 +62,7 @@ const StudentListPage = async ({
       key={item.id}
       className="border-b border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-sm hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
     >
-      <td className="flex items-center gap-4 p-4">
+      <td className="flex items-center gap-4 px-4 py-3">
         <Image
           src={item.img || "/noAvatar.png"}
           alt={`Profile photo of ${item.name}`}
@@ -75,11 +75,11 @@ const StudentListPage = async ({
           <p className="text-xs text-gray-500 dark:text-gray-400">{item.class.name}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item.username}</td>
-      <td className="hidden md:table-cell">{item.class.name[0]}</td>
-      <td className="hidden md:table-cell">{item.phone}</td>
-      <td className="hidden md:table-cell">{item.address}</td>
-      <td>
+      <td className="hidden md:table-cell px-4 py-3">{item.username}</td>
+      <td className="hidden md:table-cell px-4 py-3">{item.class.name[0]}</td>
+      <td className="hidden md:table-cell px-4 py-3">{item.phone}</td>
+      <td className="hidden md:table-cell px-4 py-3">{item.address}</td>
+      <td className="px-4 py-3">
         <div className="flex items-center gap-2">
           <Link href={`/list/students/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky hover:bg-lamaSky/80 transition-colors" aria-label="View student details">
@@ -184,7 +184,7 @@ const StudentListPage = async ({
   };
 
   return (
-    <div className="bg-gray-800 p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="bg-white dark:bg-gray-800 p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold text-white">All Students</h1>

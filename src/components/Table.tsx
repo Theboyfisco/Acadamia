@@ -11,9 +11,9 @@ const Table = ({
     <div className="bg-white dark:bg-gray-800 rounded-md overflow-hidden">
       <table className="w-full mt-4 font-sans">
       <thead>
-          <tr className="text-left text-gray-500 dark:text-gray-400 text-sm border-b border-gray-200 dark:border-gray-700">
+          <tr className="text-left text-gray-800 dark:text-white text-sm border-b border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-800">
           {columns.map((col) => (
-              <th key={col.accessor} className={`py-3 font-medium ${col.className}`}>{col.header}</th>
+              <th key={col.accessor} className={`px-4 py-3 font-medium ${col.className}`}>{col.header}</th>
           ))}
         </tr>
       </thead>
