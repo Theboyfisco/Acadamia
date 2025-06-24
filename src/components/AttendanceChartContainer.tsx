@@ -1,6 +1,7 @@
 import Image from "next/image";
 import AttendanceChart from "./AttendanceChart";
 import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 
 type AttendanceData = {
   date: Date;
@@ -8,20 +9,49 @@ type AttendanceData = {
 };
 
 const AttendanceChartContainer = async () => {
+  const { userId, sessionClaims } = auth();
+  const role = (sessionClaims as any)?.o?.rol;
+  const currentUserId = userId;
+
   const today = new Date();
   const dayOfWeek = today.getDay();
   const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
   const lastMonday = new Date(today);
-
   lastMonday.setDate(today.getDate() - daysSinceMonday);
 
-  const resData = await prisma.attendance.findMany({
-    where: {
+  // Role-based attendance query
+  let attendanceQuery: any = {
       date: {
         gte: lastMonday,
       },
-    },
+  };
+
+  if (role === "teacher") {
+    // Teacher: only their lessons
+    const teacherLessons = await prisma.lesson.findMany({
+      where: { teacherId: currentUserId! },
+      select: { id: true },
+    });
+    attendanceQuery.lessonId = {
+      in: teacherLessons.map(l => l.id),
+    };
+  } else if (role === "student") {
+    // Student: only their own attendance
+    attendanceQuery.studentId = currentUserId!;
+  } else if (role === "parent") {
+    // Parent: their children's attendance
+    const children = await prisma.student.findMany({
+      where: { parentId: currentUserId! },
+      select: { id: true },
+    });
+    attendanceQuery.studentId = {
+      in: children.map(c => c.id),
+    };
+  }
+  // Admin: all attendance (no additional filters)
+
+  const resData = await prisma.attendance.findMany({
+    where: attendanceQuery,
     select: {
       date: true,
       present: true,
@@ -62,15 +92,33 @@ const AttendanceChartContainer = async () => {
     absent: attendanceMap[day].absent,
   }));
 
+  // Role-specific title
+  const getTitle = () => {
+    switch (role) {
+      case "admin":
+        return "Overall Attendance";
+      case "teacher":
+        return "My Classes Attendance";
+      case "student":
+        return "My Attendance";
+      case "parent":
+        return "Children's Attendance";
+      default:
+        return "Attendance";
+    }
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 h-full transition-colors duration-200">
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 transition-colors duration-200">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold my-4 text-gray-900 dark:text-white">Attendance</h1>
+        <h1 className="text-xl font-semibold my-4 text-gray-900 dark:text-white">{getTitle()}</h1>
         <button aria-label="More attendance options" className="hover:bg-gray-100 dark:hover:bg-gray-700/50 p-1 rounded-full transition-colors">
           <Image src="/more.png" alt="More options icon" width={20} height={20} className="dark:invert" />
         </button>
       </div>
-      <AttendanceChart data={data}/>
+      <div className="h-72">
+        <AttendanceChart data={data}/>
+      </div>
     </div>
   );
 };

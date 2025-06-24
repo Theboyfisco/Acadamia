@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased] - YYYY-MM-DD
+### Fixed
+- Resolved multiple TypeScript errors across the project.
+- **Schema Refactoring:**
+  - Moved `ParentSchema` definition from `src/components/forms/ParentForm.tsx` to `src/lib/formValidationSchemas.ts`.
+  - Defined `ParentSchema` using Zod in `formValidationSchemas.ts` for consistency and added relevant validation rules.
+  - Updated `ParentForm.tsx` and `src/lib/actions.ts` to import `ParentSchema` from its new centralized location.
+- **Type Imports & Definitions:**
+  - Ensured the `User` type from Clerk is correctly imported in `src/lib/actions.ts` (from `@clerk/nextjs/server`).
+- **Action Signatures & Calls:**
+  - In `src/components/forms/ParentForm.tsx`: Corrected calls to `createParent` and `updateParent` server actions to pass the required two arguments, including a default `CurrentState` object, resolving an argument count mismatch.
+- **Prisma Input Type Mismatches in `src/lib/actions.ts`:**
+  - `createLesson`: Added missing `day`, `startTime`, and `endTime` fields to the data object for `prisma.lesson.create` to match `LessonUncheckedCreateInput` type.
+  - `createParent` & `updateParent`: Removed the `img` property from data passed to `prisma.parent.create` and `prisma.parent.update` as it's not part of the Prisma model input types.
+- **Optional Property Handling in `src/lib/actions.ts`:**
+  - `createSubject` & `updateSubject`: Added safety checks for `data.teachers` (using `(data.teachers || [])`) before mapping to prevent runtime errors if the property is undefined.
+- **Variable Scoping in `src/lib/actions.ts`:**
+  - `createParent`: Corrected the scope of the `clerkUser` variable to ensure it's accessible in the `catch` block for proper error handling and rollback of Clerk user creation if database insertion fails.
+
+
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

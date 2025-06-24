@@ -10,7 +10,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { auth } from "@clerk/nextjs/server";
-import toast from 'react-hot-toast';
 
 type StudentList = Student & { class: Class };
 
@@ -83,16 +82,16 @@ const StudentListPage = async ({
         <div className="flex items-center gap-2">
           <Link href={`/list/students/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky hover:bg-lamaSky/80 transition-colors" aria-label="View student details">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-900 dark:text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-800 dark:text-white">
                 <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-                <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.114-1.489 4.471-5.707 7.693-10.675 7.693-4.97 0-9.185-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM12 18.75a6.75 6.75 0 100-13.5 6.75 6.75 0 000 13.5z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clipRule="evenodd" />
               </svg>
             </button>
           </Link>
           {role === "admin" && (
             <>
               <FormContainer table="student" type="update" data={item} />
-              <FormContainer table="student" type="delete" id={item.id} />
+            <FormContainer table="student" type="delete" id={item.id} />
             </>
           )}
         </div>
@@ -142,46 +141,6 @@ const StudentListPage = async ({
     }),
     prisma.student.count({ where: query }),
   ]);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const birthdayStr = formData.get("birthday") as string;
-    
-    // Ensure the date is properly formatted
-    const birthday = birthdayStr ? new Date(birthdayStr) : new Date();
-    
-    const data = {
-      username: formData.get("username") as string,
-      password: formData.get("password") as string,
-      name: formData.get("name") as string,
-      surname: formData.get("surname") as string,
-      email: formData.get("email") as string,
-      phone: formData.get("phone") as string,
-      address: formData.get("address") as string,
-      bloodType: formData.get("bloodType") as string,
-      birthday: birthday,
-      sex: formData.get("sex") as "MALE" | "FEMALE",
-      gradeId: parseInt(formData.get("gradeId") as string),
-      classId: parseInt(formData.get("classId") as string),
-      parentId: formData.get("parentId") as string,
-    };
-
-    try {
-      const result = await createStudent({ success: false, error: false }, data);
-      
-      if (result.success) {
-        toast.success('Student created successfully!');
-        setOpen(false);
-        router.refresh();
-      } else {
-        toast.error('Failed to create student. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('An error occurred while creating the student.');
-    }
-  };
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-md flex-1 m-4 mt-0">

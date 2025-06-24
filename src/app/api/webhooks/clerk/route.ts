@@ -108,6 +108,21 @@ export async function POST(req: Request) {
           case 'student':
             console.log('Creating/updating student record');
             try {
+              // Find or create a default class
+              let defaultClass = await prisma.class.findFirst();
+              if (!defaultClass) {
+                defaultClass = await prisma.class.create({ data: { name: 'Unassigned', gradeId: 1, capacity: 1 } });
+              }
+              // Find or create a default grade
+              let defaultGrade = await prisma.grade.findFirst();
+              if (!defaultGrade) {
+                defaultGrade = await prisma.grade.create({ data: { level: 0 } });
+              }
+              // Find or create a default parent
+              let defaultParent = await prisma.parent.findFirst();
+              if (!defaultParent) {
+                defaultParent = await prisma.parent.create({ data: { id: 'default-parent', username: 'unassigned', name: 'Unassigned', surname: '', phone: '', address: '' } });
+              }
               await prisma.student.upsert({
                 where: { id },
                 update: { 
@@ -124,7 +139,10 @@ export async function POST(req: Request) {
                   phone: null,
                   bloodType: '',
                   sex: 'MALE',
-                  birthday: new Date()
+                  birthday: new Date(),
+                  class: { connect: { id: defaultClass.id } },
+                  grade: { connect: { id: defaultGrade.id } },
+                  parent: { connect: { id: defaultParent.id } },
                 },
               });
               console.log('Student record created/updated successfully');

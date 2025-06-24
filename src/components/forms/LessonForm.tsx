@@ -8,7 +8,6 @@ import {
   ClassSchema,
 } from "@/lib/formValidationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormState } from "@/lib/types";
 import { createLesson, updateLesson } from "@/lib/actions";
 import { toast } from "react-toastify";
 import InputField from "../InputField";
@@ -27,6 +26,8 @@ interface LessonFormProps {
 
 const DAYS = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"] as const;
 
+type FormState = { success: boolean; error: boolean };
+
 const LessonForm = ({ setOpen, type, data, relatedData }: LessonFormProps) => {
   const {
     register,
@@ -39,8 +40,8 @@ const LessonForm = ({ setOpen, type, data, relatedData }: LessonFormProps) => {
     resolver: zodResolver(lessonSchema),
     defaultValues: {
       ...data,
-      startTime: data?.startTime ? new Date(data.startTime).toISOString().slice(0, 16) : undefined,
-      endTime: data?.endTime ? new Date(data.endTime).toISOString().slice(0, 16) : undefined,
+      startTime: data?.startTime ? new Date(data.startTime) : undefined,
+      endTime: data?.endTime ? new Date(data.endTime) : undefined,
     },
   });
 
@@ -49,7 +50,7 @@ const LessonForm = ({ setOpen, type, data, relatedData }: LessonFormProps) => {
   const action = type === "create" ? createLesson : updateLesson;
 
   const onSubmit = async (formData: LessonSchema) => {
-    const result = await action(formData);
+    const result = await action(formState, formData);
     setFormState(result);
   };
 

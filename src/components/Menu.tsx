@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const menuItems = [
   {
-    title: "MENU",
+    title: "DASHBOARD",
     items: [
       {
         icon: "/home.png",
@@ -13,6 +13,11 @@ const menuItems = [
         href: "/",
         visible: ["admin", "teacher", "student", "parent"],
       },
+    ],
+  },
+  {
+    title: "ACADEMIC",
+    items: [
       {
         icon: "/teacher.png",
         label: "Teachers",
@@ -49,6 +54,11 @@ const menuItems = [
         href: "/list/lessons",
         visible: ["admin", "teacher"],
       },
+    ],
+  },
+  {
+    title: "ASSESSMENT",
+    items: [
       {
         icon: "/exam.png",
         label: "Exams",
@@ -73,16 +83,15 @@ const menuItems = [
         href: "/list/attendance",
         visible: ["admin", "teacher", "student", "parent"],
       },
+    ],
+  },
+  {
+    title: "COMMUNICATION",
+    items: [
       {
         icon: "/calendar.png",
         label: "Events",
         href: "/list/events",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-      {
-        icon: "/message.png",
-        label: "Messages",
-        href: "/list/messages",
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
@@ -94,7 +103,7 @@ const menuItems = [
     ],
   },
   {
-    title: "OTHER",
+    title: "ACCOUNT",
     items: [
       {
         icon: "/profile.png",
@@ -123,21 +132,26 @@ const Menu = async () => {
   const role = user?.publicMetadata?.role as string;
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden px-3 py-2">
-      {menuItems.map((section) => (
-        <div key={section.title} className="mb-3">
-          <h3 className="hidden lg:block px-3 mb-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+    <div className="flex-1 flex flex-col overflow-y-auto px-3 py-4">
+      {menuItems.map((section) => {
+        // Filter items that are visible for the current role
+        const visibleItems = section.items.filter(item => item.visible.includes(role));
+        
+        // Don't render section if no items are visible
+        if (visibleItems.length === 0) return null;
+
+        return (
+          <div key={section.title} className="mb-6">
+            <h3 className="hidden lg:block px-3 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
             {section.title}
           </h3>
-          <div className="space-y-0.5">
-            {section.items.map((item) => {
-              if (!item.visible.includes(role)) return null;
-
+            <div className="space-y-1">
+              {visibleItems.map((item) => {
               if (item.label === "Logout") {
                 return (
                   <SignOutButton key={item.label}>
                     <button
-                      className="w-full flex items-center gap-2.5 px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors group"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group"
                       aria-label={item.label}
                     >
                       <Image 
@@ -145,7 +159,7 @@ const Menu = async () => {
                         alt="" 
                         width={18} 
                         height={18}
-                        className="opacity-60 group-hover:opacity-100 transition-opacity" 
+                          className="opacity-70 group-hover:opacity-100 transition-opacity" 
                       />
                       <span className="hidden lg:block text-sm font-medium">{item.label}</span>
                     </button>
@@ -157,7 +171,7 @@ const Menu = async () => {
                 <Link
                   href={item.href}
                   key={item.label}
-                  className="flex items-center gap-2.5 px-3 py-1.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors group"
+                    className="flex items-center gap-3 px-3 py-2.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 group"
                   aria-label={item.label}
                 >
                   <Image 
@@ -165,7 +179,7 @@ const Menu = async () => {
                     alt="" 
                     width={18} 
                     height={18}
-                    className="opacity-60 group-hover:opacity-100 transition-opacity" 
+                      className="opacity-70 group-hover:opacity-100 transition-opacity" 
                   />
                   <span className="hidden lg:block text-sm font-medium">{item.label}</span>
                 </Link>
@@ -173,7 +187,8 @@ const Menu = async () => {
           })}
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

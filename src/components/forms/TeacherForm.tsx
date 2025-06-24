@@ -40,7 +40,13 @@ const TeacherForm = ({
       phone: data?.phone || '',
       address: data?.address || '',
       bloodType: data?.bloodType || '',
-      birthday: data?.birthday?.split('T')[0] || '',
+      birthday: data?.birthday 
+        ? (typeof data.birthday === 'string' 
+            ? data.birthday.split('T')[0] 
+            : data.birthday instanceof Date 
+              ? data.birthday.toISOString().split('T')[0]
+              : '')
+        : '',
       sex: data?.sex || '',
       subjects: data?.subjects || [],
       id: data?.id || undefined,
@@ -49,30 +55,47 @@ const TeacherForm = ({
 
   const [img, setImg] = useState<any>(data?.img);
 
+  const router = useRouter();
   const [state, formAction] = useFormState(
     type === "create" ? createTeacher : updateTeacher,
-    {
-      success: false,
-      error: false,
-    }
+    { success: false, error: false }
   );
 
-  const onSubmit = handleSubmit((formData) => {
-    console.log("Teacher form submitted:", formData);
-    formAction({ ...formData, img: img?.secure_url });
-  });
+  // Handle form submission
+  const onSubmit = handleSubmit(async (formData: TeacherSchema) => {
+    try {
+      // Create form data with image if available
+      const formDataWithImage = {
+        ...formData,
+        img: img?.secure_url || formData.img || null,
+        password: formData.password || undefined, // Only include password if it exists
+      };
 
-  const router = useRouter();
+      // Call the server action
+      const result = await (type === 'create' 
+        ? createTeacher(
+            { success: false, error: false },
+            formDataWithImage
+          )
+        : updateTeacher(
+            { success: false, error: false },
+            formDataWithImage
+          )
+      );
 
-  useEffect(() => {
-    if (state.success) {
-      toast(`Teacher has been ${type === "create" ? "created" : "updated"}!`);
-      setOpen(false);
-      router.refresh();
-    } else if (state.error) {
-      toast.error(`Error ${type === "create" ? "creating" : "updating"} teacher!`);
+      if (result?.success) {
+        toast.success(`Teacher ${type === "create" ? "created" : "updated"} successfully!`);
+        setOpen(false);
+        router.refresh();
+      } else {
+        toast.error(`Failed to ${type} teacher`);
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      toast.error(errorMessage);
     }
-  }, [state, router, type, setOpen]);
+  });
 
   const { subjects } = relatedData;
 
@@ -80,24 +103,27 @@ const TeacherForm = ({
   const [isSubjectsDropdownOpen, setIsSubjectsDropdownOpen] = useState(false);
 
   const selectedSex = watch("sex");
-  const selectedSubjects = watch("subjects");
+  const selectedSubjects = watch("subjects") || [];
 
   const handleSexSelect = (sex: "MALE" | "FEMALE") => {
     setValue("sex", sex, { shouldValidate: true });
     setIsSexDropdownOpen(false);
   };
 
-   const handleSubjectSelect = (id: number) => {
+   const handleSubjectSelect = (id: string) => {
     const currentSubjects = watch("subjects") || [];
     const newSubjects = currentSubjects.includes(id)
-      ? currentSubjects.filter((subjectId: number) => subjectId !== id)
+      ? currentSubjects.filter((subjectId: string) => subjectId !== id)
       : [...currentSubjects, id];
     setValue("subjects", newSubjects, { shouldValidate: true });
   };
 
 
   return (
-    <form className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 max-w-4xl mx-auto" onSubmit={onSubmit}>
+    <form
+      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 max-w-4xl mx-auto"
+      onSubmit={onSubmit}
+    >
       <div className="mb-4">
         <h1 className="text-xl font-bold text-gray-900 dark:text-white">
           {type === "create" ? "Create New Teacher" : "Update Teacher Information"}
@@ -264,28 +290,38 @@ const TeacherForm = ({
                 onClick={() => setIsSubjectsDropdownOpen(!isSubjectsDropdownOpen)}
               >
                 {selectedSubjects && selectedSubjects.length > 0
-                  ? selectedSubjects.map(id => subjects.find((subject: { id: number; name: string }) => subject.id === id)?.name).join(', ')
+                  ? selectedSubjects.map(id => {
+                      const subject = subjects.find((s: any) => String(s.id) === id);
+                      return subject?.name;
+                    }).filter(Boolean).join(', ')
                   : 'Select subjects'}
               </button>
               {isSubjectsDropdownOpen && (
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
-                  {subjects.map((subject: { id: number; name: string }) => (
-                    <li
-                      key={subject.id}
-                      className={`px-4 py-2 cursor-pointer transition-colors ${selectedSubjects && selectedSubjects.includes(subject.id) ? 'bg-blue-500 text-white dark:bg-blue-700' : 'text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'}`}
-                      onClick={() => handleSubjectSelect(subject.id)}
-                    >
-                      {subject.name}
-                    </li>
-                  ))}
+                  {subjects?.map((subject: { id: number; name: string }) => {
+                    const subjectId = String(subject.id);
+                    return (
+                      <li
+                        key={subjectId}
+                        className={`px-4 py-2 cursor-pointer transition-colors ${
+                          selectedSubjects && selectedSubjects.includes(subjectId)
+                            ? 'bg-blue-500 text-white dark:bg-blue-700'
+                            : 'text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
+                        }`}
+                        onClick={() => handleSubjectSelect(subjectId)}
+                      >
+                        {subject.name}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
+              {errors.subjects?.message && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.subjects.message.toString()}
+                </p>
+              )}
             </div>
-            {errors.subjects?.message && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.subjects.message.toString()}
-              </p>
-            )}
           </div>
         </div>
       </div>

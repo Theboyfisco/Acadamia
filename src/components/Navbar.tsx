@@ -12,7 +12,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
       <div className="px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Mobile Menu Button */}
@@ -27,28 +27,28 @@ const Navbar = () => {
           </button>
 
           {/* Search Bar */}
-          <div className={`flex-1 md:flex-none md:flex items-center gap-2 bg-gray-50 dark:bg-gray-700 rounded-full px-4 py-2 transition-all duration-300 ${
-            isSearchFocused ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''
-          } ${isMobileMenuOpen ? 'hidden' : 'flex'} md:w-[300px]`}>
+          <div className={`flex-1 md:flex-none md:flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-full px-4 py-2.5 transition-all duration-300 ${
+            isSearchFocused ? 'ring-2 ring-blue-500 dark:ring-blue-400 shadow-md' : ''
+          } ${isMobileMenuOpen ? 'hidden' : 'flex'} md:w-[350px]`}>
             <button aria-label="Search" className="text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-100 transition-colors">
               <Image src="/search.png" alt="" width={16} height={16} />
-        </button>
-        <input
-          type="text"
+            </button>
+            <input
+              type="text"
               placeholder="Search anything..."
-          aria-label="Search"
+              aria-label="Search"
               onFocus={() => setIsSearchFocused(true)}
               onBlur={() => setIsSearchFocused(false)}
               className="w-full bg-transparent outline-none text-sm text-gray-600 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-300"
-        />
-      </div>
+            />
+          </div>
 
           {/* Right Section */}
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+              className="p-2.5 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
               {theme === 'dark' ? (
@@ -60,24 +60,24 @@ const Navbar = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
               )}
-          </button>
+            </button>
 
             {/* Messages */}
             <button 
-              className="relative p-2 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+              className="relative p-2.5 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
               aria-label="Open messages"
             >
               <Image src="/message.png" alt="Messages" width={20} height={20} />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-          </button>
+              <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+            </button>
 
             {/* Announcements */}
             <button 
-              className="relative p-2 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+              className="relative p-2.5 text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
               aria-label="View announcements"
             >
               <Image src="/announcement.png" alt="Announcements" width={20} height={20} />
-              <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs font-medium animate-bounce-slow">
+              <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-purple-500 text-white rounded-full text-xs font-medium animate-bounce">
                 1
               </span>
             </button>
@@ -116,7 +116,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 py-2 px-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg animate-slide-in">
+          <div className="md:hidden mt-4 py-4 px-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-2 duration-200">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <UserButton 
@@ -131,11 +131,11 @@ const Navbar = () => {
                     {user?.firstName} {user?.lastName}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-            {user?.publicMetadata?.role as string}
+                    {user?.publicMetadata?.role as string}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 rounded-full px-4 py-2">
+              <div className="flex items-center gap-3 bg-gray-50 dark:bg-gray-700 rounded-full px-4 py-2.5">
                 <button aria-label="Search" className="text-gray-400 dark:text-gray-300">
                   <Image src="/search.png" alt="" width={16} height={16} />
                 </button>
@@ -147,7 +147,7 @@ const Navbar = () => {
                 />
               </div>
             </div>
-        </div>
+          </div>
         )}
       </div>
     </div>

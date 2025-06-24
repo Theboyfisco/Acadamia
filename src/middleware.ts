@@ -23,7 +23,7 @@ interface SessionClaims {
 }
 
 export default authMiddleware({
-  publicRoutes: ["/", "/sign-in", "/sign-up", "/unauthorized"],
+  publicRoutes: ["/", "/sign-in(.*)", "/sign-up(.*)", "/unauthorized"],
   ignoredRoutes: ["/api/webhook"],
   async afterAuth(auth, req: NextRequest) {
     // Debug logs

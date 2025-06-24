@@ -78,6 +78,68 @@ const FormContainer = async ({ table, type, data, id, relatedData: passedRelated
         ]);
         relatedData = { subjects: lessonSubjects, teachers: lessonTeachers, classes: lessonClasses };
         break;
+      case "assignment":
+        const assignmentLessons = await prisma.lesson.findMany({
+          where: {
+            ...(role === "teacher" ? { teacherId: currentUserId! } : {}),
+          },
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        });
+        relatedData = { lessons: assignmentLessons };
+        break;
+      case "result":
+        const [resultStudents, resultExams, resultAssignments] = await prisma.$transaction([
+          prisma.student.findMany({
+            select: { id: true, name: true, surname: true },
+          }),
+          prisma.exam.findMany({
+            include: {
+              lesson: {
+                include: {
+                  subject: true,
+                  class: true,
+                },
+              },
+            },
+          }),
+          prisma.assignment.findMany({
+            include: {
+              lesson: {
+                include: {
+                  subject: true,
+                  class: true,
+                },
+              },
+            },
+          }),
+        ]);
+        relatedData = { students: resultStudents, exams: resultExams, assignments: resultAssignments };
+        break;
+      case "attendance":
+        const [attendanceStudents, attendanceLessons] = await prisma.$transaction([
+          prisma.student.findMany({
+            include: { class: true },
+          }),
+          prisma.lesson.findMany({
+            include: {
+              subject: true,
+              class: true,
+              teacher: true,
+            },
+          }),
+        ]);
+        relatedData = { students: attendanceStudents, lessons: attendanceLessons };
+        break;
+      case "event":
+        const eventClasses = await prisma.class.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { classes: eventClasses };
+        break;
       default:
         break;
     }

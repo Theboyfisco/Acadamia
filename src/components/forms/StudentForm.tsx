@@ -44,7 +44,7 @@ const StudentForm = ({
       phone: data?.phone || '',
       address: data?.address || '',
       bloodType: data?.bloodType || '',
-      birthday: data?.birthday ? new Date(data.birthday).toISOString().split('T')[0] : '',
+      birthday: data?.birthday ? new Date(data.birthday) : undefined,
       parentId: data?.parentId || '',
       sex: data?.sex || '',
       gradeId: data?.gradeId || null,
@@ -73,9 +73,9 @@ const StudentForm = ({
     try {
       await formAction({ 
         ...formData,
-        sex: selectedSex,
-        gradeId: selectedGradeId,
-        classId: selectedClassId,
+        sex: (selectedSex as "MALE" | "FEMALE") ?? "MALE",
+        gradeId: selectedGradeId ?? 1,
+        classId: selectedClassId ?? 1,
         img: img?.secure_url 
       });
     } catch (error) {
@@ -108,7 +108,7 @@ const StudentForm = ({
   const { grades, classes } = relatedData;
 
   const [isSexDropdownOpen, setIsSexDropdownOpen] = useState(false);
-  const [selectedSex, setSelectedSex] = useState<string | null>(data?.sex);
+  const [selectedSex, setSelectedSex] = useState<"MALE" | "FEMALE" | null>(data?.sex ?? null);
 
   const [isGradeDropdownOpen, setIsGradeDropdownOpen] = useState(false);
   const [selectedGradeId, setSelectedGradeId] = useState<number | null>(data?.gradeId);
@@ -116,7 +116,7 @@ const StudentForm = ({
   const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState<number | null>(data?.classId);
 
-  const handleSexSelect = (sex: string) => {
+  const handleSexSelect = (sex: "MALE" | "FEMALE") => {
     setSelectedSex(sex);
     setValue('sex', sex);
     setIsSexDropdownOpen(false);
@@ -284,7 +284,7 @@ const StudentForm = ({
                 className="w-full px-4 py-2 text-left border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white text-sm"
                 onClick={() => setIsSexDropdownOpen(!isSexDropdownOpen)}
               >
-                {selectedSex || 'Select sex'}
+                {selectedSex === 'MALE' ? 'Male' : selectedSex === 'FEMALE' ? 'Female' : 'Select sex'}
               </button>
               {isSexDropdownOpen && (
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
